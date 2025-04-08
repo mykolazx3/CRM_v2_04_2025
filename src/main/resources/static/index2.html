@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+            rel="stylesheet"
+            type="text/css"
+            href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+    />
+    <title>CRM</title>
+</head>
+<body>
+
+<span id="server-response">=============================================</span>
+
+<div class="registration-form">
+    <h2>Registration</h2>
+    <div>
+        <label for="username-registration">Ім'я користувача</label>
+        <input type="text" id="username-registration" name="username" required>
+    </div>
+    <div>
+        <label for="password-registration">Пароль</label>
+        <input type="password" id="password-registration" name="password" required>
+    </div>
+    <div>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+    </div>
+    <div>
+        <label for="yearsOld">Вік</label>
+        <input type="number" id="yearsOld" name="yearsOld" required min="18">
+    </div>
+    <div>
+        <button type="button" id="btn-registration">Зареєструватися</button>
+    </div>
+</div>
+
+<div class="login-form">
+    <h2>Login</h2>
+    <div>
+        <label for="username-login">Ім'я користувача</label>
+        <input type="text" id="username-login" name="username" required>
+    </div>
+    <div>
+        <label for="password-login">Пароль</label>
+        <input type="password" id="password-login" name="password" required>
+    </div>
+    <div>
+        <button type="button" id="btn-login">Залогінитися</button>
+    </div>
+</div>
+
+<div class="user-details-form">
+    <h2>userDetails</h2>
+    <div>
+        <label for="id-user-details">Id: </label>
+        <span id="id-user-details"></span>
+    </div>
+    <div>
+        <label for="username-user-details">Ім'я користувача: </label>
+        <span id="username-user-details"></span>
+    </div>
+    <div>
+        <label for="email-user-details">Email: </label>
+        <span id="email-user-details"></span>
+    </div>
+    <div>
+        <label for="yearsOld-user-details">Вік: </label>
+        <span id="yearsOld-user-details"></span>
+    </div>
+    <div>
+        <button type="button" id="btn-user-details">Показати userDetails</button>
+    </div>
+</div>
+
+
+<!--===-->
+<script>
+    const url = 'http://localhost:8080';
+    // Отримаємо поле serverResponse
+    const serverResponse = document.getElementById('server-response');
+</script>
+
+<!--registration-->
+<script>
+    function registerUser() {
+        // Отримуємо значення з полів
+        const username = document.getElementById('username-registration').value;
+        const password = document.getElementById('password-registration').value;
+        const email = document.getElementById('email').value;
+        const yearsOld = document.getElementById('yearsOld').value;
+
+        // Перевірка на порожні поля
+        if (!username || !email || !password || !yearsOld) {
+            serverResponse.textContent ='Будь ласка, заповніть всі поля.'
+            return;
+        }
+
+        // Підготовка даних для відправки на сервер
+        const registrationData = {
+            username: username,
+            password: password,
+            email: email,
+            yearsOld: yearsOld
+        };
+
+        // Виконання AJAX запиту для реєстрації користувача
+        fetch(`${url}/auth/register`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(registrationData),
+            credentials: 'include' // Додаємо cookies у запит
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(errorMessage => {
+                        throw new Error(`Код помилки: ${response.status}. Повідомлення: ${errorMessage}`);
+                    });
+                }
+                return response.text();
+            })
+            .then(message => {
+                serverResponse.textContent = 'Реєстрація успішна! ' + message;
+            })
+            .catch(error => {
+                serverResponse.textContent = 'Помилка: ' + error.message; // Відображаємо текст помилки
+            });
+    }
+
+    // Додаємо обробник події для кнопки реєстрації
+    document.getElementById('btn-registration').addEventListener('click', registerUser);
+</script>
+
+<!--login-->
+<script>
+    function loginUser() {
+        // Отримуємо значення з полів
+        const username = document.getElementById('username-login').value;
+        const password = document.getElementById('password-login').value;
+
+        // Перевірка на порожні поля
+        if (!username || !password) {
+            serverResponse.textContent ='Будь ласка, заповніть всі поля.'
+            return;
+        }
+
+        // Підготовка даних для відправки на сервер
+        const loginData = {
+            username: username,
+            password: password
+        };
+
+        // Виконання AJAX запиту для залогінення користувача
+        fetch(`${url}/auth/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(loginData),
+            credentials: 'include' // Додаємо cookies у запит
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(errorMessage => {
+                        throw new Error(`Код помилки: ${response.status}. Повідомлення: ${errorMessage}`);
+                    });
+                }
+                return response.text();
+            })
+            .then(message => {
+                serverResponse.textContent = 'Залогінення успішне! ' + message;
+            })
+            .catch(error => {
+                serverResponse.textContent = 'Помилка: ' + error.message; // Відображаємо текст помилки
+            });
+
+    }
+
+    // Додаємо обробник події для кнопки залогінитися
+    document.getElementById('btn-login').addEventListener('click', loginUser);
+</script>
+
+<!--user-details-->
+<script>
+    function getUserDetails() {
+        // Отримуємо поля;
+        const id = document.getElementById('id-user-details');
+        const username = document.getElementById('username-user-details');
+        const email = document.getElementById('email-user-details');
+        const yearsOld = document.getElementById('yearsOld-user-details');
+
+        // Виконання AJAX запиту для userDetails користувача
+        fetch(`${url}/users/get-user`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                // Токен автоматично надається через cookie, тому додавати його вручну не потрібно
+            },
+            credentials: 'include' // Важливо, щоб cookie передавався з запитом
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(errorMessage => {
+                        throw new Error(`Код помилки: ${response.status}. Повідомлення: ${errorMessage}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Оновлення елементів з отриманими даними
+                id.innerText = data.id;
+                username.innerText = data.username;
+                email.innerText = data.email;
+                yearsOld.innerText = data.yearsOld;
+
+            })
+            .catch(error => {
+                serverResponse.textContent = 'Помилка: ' + error.message; // Відображаємо текст помилки
+            });
+    }
+
+    // Додаємо обробник події для кнопки getUserDetails
+    document.getElementById('btn-user-details').addEventListener('click', getUserDetails);
+</script>
+
+<!--refresh-token-->
+<script>
+    (function playIntervalRefreshToken(){
+        setInterval(() => {
+            refreshToken()
+            // }, 1000 * 50 * 60 * 1)
+        }, 1000 * 50 * 1)
+    })();
+
+    function  refreshToken(){
+        // Виконання AJAX запиту для оновлення токену користувача
+        fetch(`${url}/auth/refresh-token`, {
+            method: 'GET',
+            credentials: 'include' // Додаємо cookies у запит
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(errorMessage => {
+                        throw new Error(`Код помилки: ${response.status}. Повідомлення: ${errorMessage}`);
+                    });
+                }
+                return response.text();
+            })
+            .then(message => {
+                const currentTime = new Date().toLocaleTimeString(); // Отримуємо поточний час
+                serverResponse.textContent = `Токен успішно оновлено о ${currentTime}! ${message}`;
+            })
+            .catch(error => {
+                const currentTime = new Date().toLocaleTimeString(); // Отримуємо поточний час при помилці
+                serverResponse.textContent = `Помилка о ${currentTime}: ${error.message}`; // Відображаємо текст помилки
+            });
+    }
+</script>
+
+</body>
+</html>
