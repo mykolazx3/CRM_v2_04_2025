@@ -24,10 +24,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        //LocalStorage
-//        String token = extractTokenFromHeader(request);
-        //Cookie
-        String token = extractTokenFromCookie(request);// Отримуємо JWT з cookie
+
+        String token = extractTokenFromHeader(request);
 
         if (token != null && jwtUtil.isValidToken(token)) {
             String username = jwtUtil.extractUsername(token); // Отримуємо ім'я користувача з токена
@@ -38,26 +36,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
-    //LocalStorage
-//    private String extractTokenFromHeader(HttpServletRequest request) {
-//        String authHeader = request.getHeader("Authorization");
-//        if (authHeader != null && !authHeader.isBlank() && authHeader.startsWith("Bearer ")){
-//            return authHeader.substring("Bearer ".length());
-//        }
-//        return null;
-//    }
 
-    //Cookie
-    private String extractTokenFromCookie(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();// Отримуємо cookie з запиту
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("JWT".equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
+    private String extractTokenFromHeader(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && !authHeader.isBlank() && authHeader.startsWith("Bearer ")){
+            return authHeader.substring("Bearer ".length());
         }
         return null;
     }
-
 }

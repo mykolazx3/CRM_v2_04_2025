@@ -33,24 +33,19 @@ public class SecurityConfig {
                     config.setAllowCredentials(true); // Дозволяє передавати credentials (наприклад, кукі)
                     return config;
                 }))
-                .csrf(AbstractHttpConfigurer::disable)
 //        У випадку використання JWT для аутентифікації (яка є безстанною і не використовує сесії на сервері), механізм CSRF є зайвим,
 //        тому що CSRF атакує зазвичай сайти, де сесія користувача зберігається на сервері через кукі. З JWT ви передаєте токен у заголовках запиту,
 //        і якщо зловмисник не може отримати токен, атакувати не можна.
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth -> auth
                         .requestMatchers(
                                 "/auth/register", "/auth/login").permitAll()
                         .requestMatchers(
                                 "/index", "/index.html").permitAll()
                         .requestMatchers(
-                                "/index2", "/index2.html").permitAll()
-                        .requestMatchers(
                                 "/static/**", "/url.js").permitAll() //не обовязково, доступ до /index канає без цього
                         .anyRequest().authenticated()
                 ))
-//                .requiresChannel(channel -> channel
-//                        .anyRequest().requiresSecure() // Примушує всі запити бути через HTTPS
-//                )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
