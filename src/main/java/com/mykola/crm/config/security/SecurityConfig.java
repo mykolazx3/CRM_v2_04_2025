@@ -41,7 +41,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/auth/register", "/auth/login").permitAll()
                         .requestMatchers(
-                                "/index", "/index.html").permitAll()
+                                "/index", "/index/index.html").permitAll()
                         .requestMatchers(
                                 "/static/**", "/url.js").permitAll() //не обовязково, доступ до /index канає без цього
                         .anyRequest().authenticated()

@@ -8,7 +8,7 @@ public class IndexController {
 
     @GetMapping("/index")
     public String index() {
-        return "forward:/index.html"; //тільки так заканало. index або index.html не канає
+        return "forward:/index/index.html"; //тільки так заканало. index або index.html не канає
     }
 
 }
