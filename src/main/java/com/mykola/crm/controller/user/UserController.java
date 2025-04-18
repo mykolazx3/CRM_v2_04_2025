@@ -18,8 +18,9 @@ public class UserController {
     private final UserServiceImpl userService;
 
     @GetMapping("/get-user")
-    public ResponseEntity<UserDetailsResponse> getUserDetails (@AuthenticationPrincipal User currentUser){
-        UserDetailsResponse userDetailsResponse = userService.getUserDetails (currentUser);
+    public ResponseEntity<UserDetailsResponse> getUserDetails(
+            @AuthenticationPrincipal User currentUser) {
+        UserDetailsResponse userDetailsResponse = userService.getUserDetails(currentUser);
         return ResponseEntity.ok(userDetailsResponse);
     }
 }

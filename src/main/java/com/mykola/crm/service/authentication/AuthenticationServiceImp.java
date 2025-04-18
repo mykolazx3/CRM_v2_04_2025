@@ -1,12 +1,12 @@
 package com.mykola.crm.service.authentication;
 
+import com.mykola.crm.config.security.JwtUtil;
 import com.mykola.crm.dto.authentication.LoginRequest;
 import com.mykola.crm.dto.authentication.RegistrationRequest;
 import com.mykola.crm.dto.authentication.TokenResponse;
 import com.mykola.crm.exception.UserAlreadyExistsException;
 import com.mykola.crm.model.User;
 import com.mykola.crm.repository.UserRepository;
-import com.mykola.crm.config.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
-public class AuthenticationServiceImp implements AuthenticationService{
+public class AuthenticationServiceImp implements AuthenticationService {
 
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
@@ -30,7 +30,8 @@ public class AuthenticationServiceImp implements AuthenticationService{
     @Transactional
     public TokenResponse register(RegistrationRequest registrationRequest) {
 
-        if (userRepository.existsByUsernameOrEmail(registrationRequest.getUsername(), registrationRequest.getEmail())) {
+        if (userRepository.existsByUsernameOrEmail(registrationRequest.getUsername(),
+                registrationRequest.getEmail())) {
             throw new UserAlreadyExistsException("Username or Email already exists");
         }
 
@@ -43,7 +44,8 @@ public class AuthenticationServiceImp implements AuthenticationService{
         ));
 
         // Аутентифікація нового користувача
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
                 user.getUsername(),
                 registrationRequest.getPassword()));
 
@@ -56,12 +58,12 @@ public class AuthenticationServiceImp implements AuthenticationService{
         return new TokenResponse(jwtToken);
     }
 
-
     public TokenResponse authenticate(LoginRequest loginRequest) {
         try {
-            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                    loginRequest.getUsername(),
-                    loginRequest.getPassword()));
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsername(),
+                            loginRequest.getPassword()));
 
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             String jwtToken = jwtUtil.generateToken(userDetails.getUsername());

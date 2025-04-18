@@ -2,7 +2,6 @@ package com.mykola.crm.config.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -23,15 +22,21 @@ public class JwtFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
         String token = extractTokenFromHeader(request);
 
         if (token != null && jwtUtil.isValidToken(token)) {
-            String username = jwtUtil.extractUsername(token); // Отримуємо ім'я користувача з токена
+            // Отримуємо ім'я користувача з токена
+            String username = jwtUtil.extractUsername(token);
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()); // Створюємо аутентифікацію для користувача
-            SecurityContextHolder.getContext().setAuthentication(authentication); // Встановлюємо аутентифікацію в контекст безпеки
+            // Створюємо аутентифікацію для користувача
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities());
+            // Встановлюємо аутентифікацію в контекст безпеки
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
         filterChain.doFilter(request, response);
@@ -39,7 +44,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private String extractTokenFromHeader(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
-        if (authHeader != null && !authHeader.isBlank() && authHeader.startsWith("Bearer ")){
+        if (authHeader != null && !authHeader.isBlank() && authHeader.startsWith("Bearer ")) {
             return authHeader.substring("Bearer ".length());
         }
         return null;

@@ -1,7 +1,5 @@
 package com.mykola.crm.config.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -29,11 +27,15 @@ public class JwtUtil {
         claims.put("ask", "ask1");
 
         return Jwts.builder()
-                .setSubject(username) // Встановлюємо стандартний клейм "subject" з іменем користувача
-                .addClaims(claims)  // Додаємо ваші власні клейми
+                // Встановлюємо стандартний клейм "subject" з іменем користувача
+                .setSubject(username)
+                // Додаємо ваші власні клейми
+                .addClaims(claims)
                 .setIssuer("CRM")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + (1000L * 60 * 60 * expiration)))  // було
+                // було
+                .setExpiration(
+                        new Date(System.currentTimeMillis() + (1000L * 60 * 60 * expiration)))
                 .signWith(secretKey).compact();
     }
 
@@ -43,11 +45,11 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
-                .getSubject(); // Витягуємо ім'я користувача зі стандартного клейма "subject"
+                // Витягуємо ім'я користувача зі стандартного клейма "subject"
+                .getSubject();
     }
 
     public boolean isValidToken(String token) {
-
         try {
             return !Jwts.parserBuilder()
                     .setSigningKey(secretKey)
@@ -60,5 +62,4 @@ public class JwtUtil {
             throw new RuntimeException("Expired or invalid JWT token", e);
         }
     }
-
 }

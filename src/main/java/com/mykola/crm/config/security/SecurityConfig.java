@@ -3,7 +3,6 @@ package com.mykola.crm.config.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,15 +26,22 @@ public class SecurityConfig {
         return http
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.addAllowedOrigin("*"); // Вкажіть точний домен замість "*"
-                    config.addAllowedMethod("*"); // Дозволяє всі HTTP методи
-                    config.addAllowedHeader("*"); // Дозволяє всі заголовки
-                    config.setAllowCredentials(true); // Дозволяє передавати credentials (наприклад, кукі)
+                    // Вкажіть точний домен замість "*"
+                    config.addAllowedOrigin("*");
+                    // Дозволяє всі HTTP методи
+                    config.addAllowedMethod("*");
+                    // Дозволяє всі заголовки
+                    config.addAllowedHeader("*");
+                    // Дозволяє передавати credentials (наприклад, кукі)
+                    config.setAllowCredentials(true);
                     return config;
                 }))
-//        У випадку використання JWT для аутентифікації (яка є безстанною і не використовує сесії на сервері), механізм CSRF є зайвим,
-//        тому що CSRF атакує зазвичай сайти, де сесія користувача зберігається на сервері через кукі. З JWT ви передаєте токен у заголовках запиту,
-//        і якщо зловмисник не може отримати токен, атакувати не можна.
+                //  У випадку використання JWT для аутентифікації
+                //  (яка є безстанною і не використовує сесії на сервері), механізм CSRF є зайвим,
+                //  тому що CSRF атакує зазвичай сайти,
+                //  де сесія користувача зберігається на сервері через кукі.
+                //  З JWT ви передаєте токен у заголовках запиту,
+                //  і якщо зловмисник не може отримати токен, атакувати не можна.
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth -> auth
                         .requestMatchers(
@@ -43,17 +49,20 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/index", "/index/index.html").permitAll()
                         .requestMatchers(
-                                "/static/**", "/url.js").permitAll() //не обовязково, доступ до /index канає без цього
+                                //не обовязково, доступ до /index канає без цього
+                                "/static/**", "/url.js").permitAll()
                         .anyRequest().authenticated()
                 ))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(
+                        SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
-
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 

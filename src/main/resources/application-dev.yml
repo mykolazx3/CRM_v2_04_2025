@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: CRM_v2_04_2025
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: true
+        format_sql: true
+        highlight_sql: true
+    open-in-view: false
+
+  liquibase:
+    enabled: true
+    driver-class-name: org.postgresql.Driver
+    url: ${SPRING_DATASOURCE_URL}
+    user: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+
+server:
+  port: 8080
+
+jwt:
+  expiration:
+    time: 1
+  secret:
+    key: ${JWT_SECRET_KEY}

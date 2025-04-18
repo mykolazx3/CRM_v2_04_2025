@@ -7,6 +7,8 @@ import com.mykola.crm.model.User;
 
 public interface AuthenticationService {
     TokenResponse register(RegistrationRequest registrationRequest);
+
     TokenResponse authenticate(LoginRequest loginRequest);
+
     TokenResponse refreshToken(User currentUser);
 }
