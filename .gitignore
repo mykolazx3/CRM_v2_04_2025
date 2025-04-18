@@ -34,6 +34,6 @@ build/
 
 # Додаємо правило для application-secret.properties
 /src/main/resources/application-secret.properties
-/src/main/resources/liquibase-secret.properties
-.env
+#/src/main/resources/liquibase-secret.properties
+/.env
 

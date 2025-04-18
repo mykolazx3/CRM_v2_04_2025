@@ -1,12 +1,15 @@
 spring:
+  config:
+    import: application-secret.properties
+
   application:
     name: CRM_v2_04_2025
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${SPRING_DATASOURCE_URL_DEV}
-    username: ${SPRING_DATASOURCE_USERNAME_DEV}
-    password: ${SPRING_DATASOURCE_PASSWORD_DEV}
+    url: ${SECRET_DB_URL}
+    username: ${SECRET_DB_USERNAME}
+    password: ${SECRET_DB_PASSWORD}
 
   jpa:
     hibernate:
@@ -22,9 +25,9 @@ spring:
   liquibase:
     enabled: true
     driver-class-name: org.postgresql.Driver
-    url: ${SPRING_DATASOURCE_URL_DEV}
-    user: ${SPRING_DATASOURCE_USERNAME_DEV}
-    password: ${SPRING_DATASOURCE_PASSWORD_DEV}
+    url: ${SECRET_DB_URL}
+    user: ${SECRET_DB_USERNAME}
+    password: ${SECRET_DB_PASSWORD}
     change-log: classpath:/db/changelog/db.changelog-master.yaml
 
   mvc:
@@ -39,4 +42,4 @@ jwt:
   expiration:
     time: 1
   secret:
-    key: ${JWT_KEY}
+    key: ${SECRET_JWT_KEY}
