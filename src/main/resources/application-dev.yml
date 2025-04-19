@@ -4,13 +4,13 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${SPRING_DATASOURCE_URL_DEV}
-    username: ${SPRING_DATASOURCE_USERNAME_DEV}
-    password: ${SPRING_DATASOURCE_PASSWORD_DEV}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -22,9 +22,9 @@ spring:
   liquibase:
     enabled: true
     driver-class-name: org.postgresql.Driver
-    url: ${SPRING_DATASOURCE_URL_DEV}
-    user: ${SPRING_DATASOURCE_USERNAME_DEV}
-    password: ${SPRING_DATASOURCE_PASSWORD_DEV}
+    url: ${SPRING_DATASOURCE_URL}
+    user: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     change-log: classpath:/db/changelog/db.changelog-master.yaml
 
   mvc:
@@ -39,4 +39,4 @@ jwt:
   expiration:
     time: 1
   secret:
-    key: ${JWT_KEY}
+    key: ${JWT_SECRET_KEY}
