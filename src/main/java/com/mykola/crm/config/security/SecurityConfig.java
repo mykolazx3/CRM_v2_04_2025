@@ -47,10 +47,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/auth/register", "/auth/login").permitAll()
                         .requestMatchers(
-                                "/index", "/index/index.html").permitAll()
-                        .requestMatchers(
-                                //не обовязково, доступ до /index канає без цього
-                                "/static/**", "/url.js").permitAll()
+                                "/index", "/index/index.html", "/index/index.js").permitAll()
                         .anyRequest().authenticated()
                 ))
                 .sessionManagement(session -> session.sessionCreationPolicy(

@@ -1,4 +1,7 @@
 spring:
+  application:
+    name: CRM_v2_04_2025
+
   profiles:
     active: ${SPRING_PROFILES_ACTIVE}
 #    active: test
